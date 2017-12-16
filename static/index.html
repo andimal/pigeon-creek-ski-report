@@ -1,0 +1,97 @@
+<!doctype html>
+<html class="no-js" lang="" style="background-color:#1e87f0">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Pigeon Creek Ski Report</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/css/uikit.min.css">
+    </head>
+    <body>
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+
+        <div class="uk-section">
+          <div class="uk-container uk-container-small">
+            <h1 class="uk-heading-primary uk-light uk-text-center uk-padding">Pigeon Creek Ski Report</h1>
+
+            <div class="uk-card uk-card-default uk-card-body">
+              <div class="loading-spinner uk-text-center uk-display-block" uk-spinner></div>
+
+              <div class="content" style="display:none">
+                <audio controls>
+                  Your browser does not support the audio element.
+                </audio>
+                <br>
+                <i class="uk-text-meta">Recorded: <span></span></i>
+                <p class="uk-alert"></p>
+                <hr class="uk-divider-icon">
+                <ul uk-accordion="multiple: true"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.4/moment.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/js/uikit.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/js/uikit-icons.min.js"></script>
+
+        <script>
+          var momentFormat = 'dddd, MMMM Do YYYY, h:mm a';
+
+          function reportListItem(report) {
+            var transcription;
+            if (report.transcription) {
+              transcription = '<p class="uk-alert">' + report.transcription + '</p>';
+            } else {
+              transcription = '';
+            }
+
+            return  '<li>' +
+                      '<h3 class="uk-accordion-title uk-text-bold uk-text-small" data-audio-url="' + report.recording + '">' + moment(report.created_at).format(momentFormat) + '</h3>' +
+                      '<div class="report-content uk-accordion-content">' +
+                        '<a href="" class="uk-icon-button uk-button-primary" uk-icon="icon: play; ratio: 1.5"></a>' +
+                        transcription +
+                      '</div>' +
+                    '</li>';
+          }
+
+          $(document).on('click', 'li a', function(e) {
+            e.preventDefault();
+            var audioUrl = $(this).closest('li').find('> h3').attr('data-audio-url');
+            var audioComponent =  '<audio controls autoplay>' +
+                                    '<source src="' + audioUrl + '">' +
+                                  '</audio>';
+            $(this).after(audioComponent);
+            $(this).remove();
+          });
+
+          var reportUrl ='http://pc.andimal.co/api';
+          // var reportUrl ='http://localhost:5000';
+          $.getJSON(reportUrl, function(reports) {
+            $('audio').append('<source src="' + reports[0].recording + '">');
+            $('i span').text(moment(reports[0].created_at).format(momentFormat));
+            $('p').text(reports[0].transcription);
+
+            for (var i = 0; i < reports.length; i++) {
+              if(i > 0) {
+                $('ul').append(reportListItem(reports[i]));
+              }
+            }
+
+            $('.loading-spinner').remove();
+            $('.content').show();
+          });
+        </script>
+
+        <!-- <script>
+            window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
+            ga('create','UA-XXXXX-Y','auto');ga('send','pageview')
+        </script>
+        <script src="https://www.google-analytics.com/analytics.js" async defer></script> -->
+    </body>
+</html>
