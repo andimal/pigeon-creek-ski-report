@@ -17,6 +17,11 @@
         <div class="uk-section">
           <div class="uk-container uk-container-small">
             <h1 class="uk-heading-primary uk-light uk-text-center uk-padding">Pigeon Creek Ski Report</h1>
+            <p class="uk-text-center uk-light">
+              <a class="uk-display-block" href="http://www.miottawa.org/Parks/pigeoncreek.htm">Pigeon Creek Park</a>
+              <a class="uk-display-block" href="https://www.miottawa.org/TrailConditions/retrievePublicList.action">Trail Conditions</a>
+              <span class="uk-display-block">The hotline message is updated here every day at 8am EST or you can call directly at <a href="tel:6167389531">(616) 738-9531</a>.</span>
+            </p>
 
             <div class="uk-card uk-card-default uk-card-body">
               <div class="loading-spinner uk-text-center uk-display-block" uk-spinner></div>
@@ -34,6 +39,23 @@
             </div>
           </div>
         </div>
+
+        <nav class="uk-navbar-container" uk-navbar="boundary-align: true; align: center;">
+          <div class="uk-navbar-left">
+            <ul class="uk-navbar-nav">
+              <li><a href="http://andimal.co">andimal.co</a></li>
+              <li><a href="http://www.miottawa.org/Parks/pigeoncreek.htm">Pigeon Creek Park</a></li>
+            </ul>
+          </div>
+
+          <div class="uk-navbar-right">
+            <ul class="uk-navbar-nav">
+              <li><a href="https://github.com/andimal/pigeon-creek-ski-report">GitHub</a></li>
+              <li><a href="https://getuikit.com">UIkit</a></li>
+              <li><a href="https://www.twilio.com/">Twilio</a></li>
+            </ul>
+          </div>
+        </nav>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.4/moment.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -60,7 +82,7 @@
                     '</li>';
           }
 
-          $(document).on('click', 'li a', function(e) {
+          $(document).on('click', '.uk-card li a', function(e) {
             e.preventDefault();
             var audioUrl = $(this).closest('li').find('> h3').attr('data-audio-url');
             var audioComponent =  '<audio controls autoplay>' +
@@ -75,11 +97,11 @@
           $.getJSON(reportUrl, function(reports) {
             $('audio').append('<source src="' + reports[0].recording + '">');
             $('i span').text(moment(reports[0].created_at).format(momentFormat));
-            $('p').text(reports[0].transcription);
+            $('.uk-card p').text(reports[0].transcription);
 
             for (var i = 0; i < reports.length; i++) {
               if(i > 0) {
-                $('ul').append(reportListItem(reports[i]));
+                $('.uk-card ul').append(reportListItem(reports[i]));
               }
             }
 
